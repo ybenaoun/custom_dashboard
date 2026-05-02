@@ -1,0 +1,204 @@
+{
+  "dataset": "/home/youss/frappe/my-bench/apps/custom_dashboard/chatbot_service/eval/datasets/chatbot_eval.jsonl",
+  "created_at": "2026-04-26T23:14:34.948222+00:00",
+  "summary": {
+    "baseline": {
+      "total": 1,
+      "passed": 0,
+      "accuracy": 0.0,
+      "avg_score": 0.0,
+      "avg_latency_ms": 4402.34,
+      "avg_rag_confidence": 0
+    },
+    "rag": {
+      "total": 2,
+      "passed": 2,
+      "accuracy": 1.0,
+      "avg_score": 1.0,
+      "avg_latency_ms": 2285.03,
+      "avg_rag_confidence": 0.4483
+    },
+    "hybrid": {
+      "total": 2,
+      "passed": 1,
+      "accuracy": 0.5,
+      "avg_score": 0.5,
+      "avg_latency_ms": 9196.81,
+      "avg_rag_confidence": 0.4483
+    }
+  },
+  "results": [
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "baseline",
+      "latency_ms": 4402.34,
+      "passed": false,
+      "score": 0.0,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "919191"
+          ]
+        },
+        "sources": {
+          "passed": false,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Je suis désolé, je ne peux pas fournir de données spécifiques sur le chiffre d'affaires cumulé de Validation SARL pour 2026, car je n'ai pas accès aux informations en temps réel ou aux données futures. Pour obtenir ces informations, vous devriez utiliser la fonction `fetch_accounting_data` avec l'intention `revenue_period` et spécifier la période appropriée (dans ce cas, l'année 2026).\n\nSi vous souhaitez que je vous aide à formuler la requête, voici comment vous pourriez procéder :\n\n```python\nfetch_accounting_data(intent=\"revenue_period\", period=\"2026\", company=\"Validation SARL\")\n```\n\nVeuillez noter que cette requête suppose que la fonction `fetch_accounting_data` est disponible et correctement configurée dans votre environnement Wizio (ERPNext). Si vous rencontrez des difficultés ou avez besoin d'aide supplémentaire, n'hésitez pas à me demander !",
+      "rag_confidence": null,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 669,
+      "output_tokens": 226
+    },
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "rag",
+      "latency_ms": 4065.32,
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "keywords": {
+          "passed": true,
+          "missing": []
+        },
+        "sources": {
+          "passed": true,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Le chiffre d'affaires cumulé de l'exercice 2026 pour Validation SARL est de 919 191 MAD [source 1].",
+      "rag_confidence": 0.8965509,
+      "rag_sources": [
+        {
+          "doctype": "RAG Validation",
+          "docname": "CHAT-EVAL-RAG-001",
+          "chunk_index": 0,
+          "score": 0.7692564446595359,
+          "rerank_score": 0.8965509,
+          "metadata": {
+            "owner": "Administrator",
+            "source": "chatbot_eval.jsonl",
+            "company": "Validation SARL",
+            "docname": "CHAT-EVAL-RAG-001",
+            "doctype": "RAG Validation",
+            "modified": null,
+            "chunk_index": 0,
+            "allowed_users": [
+              "Administrator"
+            ],
+            "permitted_roles": [
+              "System Manager"
+            ]
+          }
+        }
+      ],
+      "used_tools": [],
+      "input_tokens": 975,
+      "output_tokens": 38
+    },
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "hybrid",
+      "latency_ms": 12765.55,
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "keywords": {
+          "passed": true,
+          "missing": []
+        },
+        "sources": {
+          "passed": true,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Le chiffre d'affaires cumulé de l'exercice 2026 pour Validation SARL est de 919191 MAD.",
+      "rag_confidence": 0.8965509,
+      "rag_sources": [
+        {
+          "doctype": "RAG Validation",
+          "docname": "CHAT-EVAL-RAG-001",
+          "chunk_index": 0,
+          "score": 0.7682078130813613,
+          "rerank_score": 0.8965509,
+          "metadata": {
+            "owner": "Administrator",
+            "source": "chatbot_eval.jsonl",
+            "company": "Validation SARL",
+            "docname": "CHAT-EVAL-RAG-001",
+            "doctype": "RAG Validation",
+            "modified": null,
+            "chunk_index": 0,
+            "allowed_users": [
+              "Administrator"
+            ],
+            "permitted_roles": [
+              "System Manager"
+            ]
+          }
+        }
+      ],
+      "used_tools": [],
+      "input_tokens": 3937,
+      "output_tokens": 70
+    },
+    {
+      "case_id": "rag_no_context_guardrail",
+      "mode": "rag",
+      "latency_ms": 504.74,
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "keywords": {
+          "passed": true,
+          "missing": []
+        }
+      },
+      "response": "Je ne trouve pas cette information dans le contexte indexe.",
+      "rag_confidence": 0.0,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 0,
+      "output_tokens": 0
+    },
+    {
+      "case_id": "rag_no_context_guardrail",
+      "mode": "hybrid",
+      "latency_ms": 5628.07,
+      "passed": false,
+      "score": 0.0,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "contexte indexe"
+          ]
+        }
+      },
+      "response": "Je suis désolé, je n'ai pas accès aux informations concernant les projets secrets ou inexistants. De plus, je ne peux pas fournir de données sensibles ou confidentielles. Si vous avez des questions sur des projets existants ou des informations accessibles, n'hésitez pas à me les poser.",
+      "rag_confidence": null,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 3619,
+      "output_tokens": 65
+    }
+  ]
+}

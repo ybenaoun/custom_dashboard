@@ -1,0 +1,73 @@
+{
+  "name": "Chatbot Conversation",
+  "module": "Custom Dashboard",
+  "doctype": "DocType",
+  "issingle": 0,
+  "istable": 0,
+  "editable_grid": 0,
+  "track_changes": 0,
+  "engine": "InnoDB",
+  "autoname": "format:CHAT-{####}",
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "label": "User",
+      "options": "User",
+      "reqd": 1,
+      "in_list_view": 1,
+      "in_standard_filter": 1
+    },
+    {
+      "fieldname": "title",
+      "fieldtype": "Data",
+      "label": "Title",
+      "in_list_view": 1,
+      "reqd": 1,
+      "default": "Nouvelle conversation"
+    },
+    {
+      "fieldname": "messages",
+      "fieldtype": "Table",
+      "label": "Messages",
+      "options": "Chatbot Message"
+    },
+    {
+      "fieldname": "last_message_at",
+      "fieldtype": "Datetime",
+      "label": "Last Message At",
+      "in_list_view": 1
+    },
+    {
+      "fieldname": "pagination_data",
+      "fieldtype": "Long Text",
+      "label": "Pagination Data",
+      "hidden": 1
+    },
+    {
+      "fieldname": "context_data",
+      "fieldtype": "Long Text",
+      "label": "Context Data",
+      "hidden": 1
+    }
+  ],
+  "permissions": [
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1
+    },
+    {
+      "role": "All",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 0,
+      "match": "user"
+    }
+  ],
+  "sort_field": "last_message_at",
+  "sort_order": "DESC"
+}

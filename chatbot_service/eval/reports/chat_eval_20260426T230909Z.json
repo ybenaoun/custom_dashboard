@@ -1,0 +1,208 @@
+{
+  "dataset": "/home/youss/frappe/my-bench/apps/custom_dashboard/chatbot_service/eval/datasets/chatbot_eval.jsonl",
+  "created_at": "2026-04-26T23:09:09.879474+00:00",
+  "summary": {
+    "baseline": {
+      "total": 1,
+      "passed": 0,
+      "accuracy": 0.0,
+      "avg_score": 0.0,
+      "avg_latency_ms": 2595.19,
+      "avg_rag_confidence": 0
+    },
+    "rag": {
+      "total": 2,
+      "passed": 0,
+      "accuracy": 0.0,
+      "avg_score": 0.25,
+      "avg_latency_ms": 2893.14,
+      "avg_rag_confidence": 0.4483
+    },
+    "hybrid": {
+      "total": 2,
+      "passed": 1,
+      "accuracy": 0.5,
+      "avg_score": 0.5,
+      "avg_latency_ms": 3018.72,
+      "avg_rag_confidence": 0.4483
+    }
+  },
+  "results": [
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "baseline",
+      "latency_ms": 2595.19,
+      "passed": false,
+      "score": 0.0,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "919191"
+          ]
+        },
+        "sources": {
+          "passed": false,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Je ne peux pas répondre à cette question car je n'ai pas accès aux données spécifiques de Validation SARL ni à un contexte indexé. Pour obtenir le chiffre d'affaires cumulé de 2026, il faudrait utiliser l'outil `fetch_accounting_data` avec l'intention `revenue_period` et la période appropriée, mais je n'ai pas cette capacité en lecture seule. Si vous avez accès à Wizio (ERPNext), vous pouvez utiliser cet outil pour obtenir les informations souhaitées.",
+      "rag_confidence": null,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 669,
+      "output_tokens": 117
+    },
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "rag",
+      "latency_ms": 1424.44,
+      "passed": false,
+      "score": 0.5,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "919191"
+          ]
+        },
+        "sources": {
+          "passed": true,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Le chiffre d'affaires cumulé de l'exercice 2026 pour Validation SARL est de 919 191 MAD [source 1].",
+      "rag_confidence": 0.8965509,
+      "rag_sources": [
+        {
+          "doctype": "RAG Validation",
+          "docname": "CHAT-EVAL-RAG-001",
+          "chunk_index": 0,
+          "score": 0.7692564446595359,
+          "rerank_score": 0.8965509,
+          "metadata": {
+            "owner": "Administrator",
+            "source": "chatbot_eval.jsonl",
+            "company": "Validation SARL",
+            "docname": "CHAT-EVAL-RAG-001",
+            "doctype": "RAG Validation",
+            "modified": null,
+            "chunk_index": 0,
+            "allowed_users": [
+              "Administrator"
+            ],
+            "permitted_roles": [
+              "System Manager"
+            ]
+          }
+        }
+      ],
+      "used_tools": [],
+      "input_tokens": 975,
+      "output_tokens": 38
+    },
+    {
+      "case_id": "rag_validation_revenue",
+      "mode": "hybrid",
+      "latency_ms": 3832.08,
+      "passed": true,
+      "score": 1.0,
+      "checks": {
+        "keywords": {
+          "passed": true,
+          "missing": []
+        },
+        "sources": {
+          "passed": true,
+          "expected": [
+            {
+              "doctype": "RAG Validation",
+              "docname": "CHAT-EVAL-RAG-001"
+            }
+          ]
+        }
+      },
+      "response": "Le chiffre d'affaires cumulé de l'exercice 2026 pour Validation SARL est de 919191 MAD.",
+      "rag_confidence": 0.8965509,
+      "rag_sources": [
+        {
+          "doctype": "RAG Validation",
+          "docname": "CHAT-EVAL-RAG-001",
+          "chunk_index": 0,
+          "score": 0.7692564446595359,
+          "rerank_score": 0.8965509,
+          "metadata": {
+            "owner": "Administrator",
+            "source": "chatbot_eval.jsonl",
+            "company": "Validation SARL",
+            "docname": "CHAT-EVAL-RAG-001",
+            "doctype": "RAG Validation",
+            "modified": null,
+            "chunk_index": 0,
+            "allowed_users": [
+              "Administrator"
+            ],
+            "permitted_roles": [
+              "System Manager"
+            ]
+          }
+        }
+      ],
+      "used_tools": [],
+      "input_tokens": 3937,
+      "output_tokens": 70
+    },
+    {
+      "case_id": "rag_no_context_guardrail",
+      "mode": "rag",
+      "latency_ms": 4361.83,
+      "passed": false,
+      "score": 0.0,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "contexte indexe"
+          ]
+        }
+      },
+      "response": "Je n'ai pas accès aux informations sur un projet nommé \"Inexistant Alpha\", et il n'y a pas de données disponibles sur un tel projet dans le système. Si vous avez des détails supplémentaires ou si vous souhaitez vérifier un autre projet, n'hésitez pas à me le faire savoir.",
+      "rag_confidence": null,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 657,
+      "output_tokens": 66
+    },
+    {
+      "case_id": "rag_no_context_guardrail",
+      "mode": "hybrid",
+      "latency_ms": 2205.37,
+      "passed": false,
+      "score": 0.0,
+      "checks": {
+        "keywords": {
+          "passed": false,
+          "missing": [
+            "contexte indexe"
+          ]
+        }
+      },
+      "response": "Je ne peux pas accéder aux informations sur des projets inexistants.",
+      "rag_confidence": null,
+      "rag_sources": [],
+      "used_tools": [],
+      "input_tokens": 3619,
+      "output_tokens": 16
+    }
+  ]
+}

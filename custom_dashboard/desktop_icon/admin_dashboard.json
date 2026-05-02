@@ -1,0 +1,20 @@
+{
+ "app": "custom_dashboard",
+ "creation": "2026-04-23 12:55:00",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 2,
+ "label": "Admin Dashboard",
+ "link": "/app/admin-dashboard",
+ "link_type": "External",
+ "logo_url": "/assets/custom_dashboard/images/admin-dashboard-logo.svg",
+ "modified": "2026-05-02 03:10:17.968777",
+ "modified_by": "Administrator",
+ "name": "Admin Dashboard",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

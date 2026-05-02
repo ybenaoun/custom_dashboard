@@ -1,0 +1,125 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "Prompt",
+ "creation": "2026-04-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "title",
+  "widget_type",
+  "data_source_type",
+  "python_method",
+  "static_data_json",
+  "category",
+  "icon",
+  "is_active",
+  "allow_filters",
+  "roles"
+ ],
+ "fields": [
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title",
+   "reqd": 1
+  },
+  {
+   "fieldname": "widget_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Widget Type",
+   "options": "number_card\nchart\ntable\ncustom",
+   "reqd": 1
+  },
+  {
+   "fieldname": "data_source_type",
+   "fieldtype": "Select",
+   "label": "Data Source Type",
+   "options": "python_method\nstatic_json",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.data_source_type === 'python_method'",
+   "fieldname": "python_method",
+   "fieldtype": "Data",
+   "label": "Python Method"
+  },
+  {
+   "depends_on": "eval:doc.data_source_type === 'static_json'",
+   "fieldname": "static_data_json",
+   "fieldtype": "Long Text",
+   "label": "Static Data JSON"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Data",
+   "label": "Category"
+  },
+  {
+   "fieldname": "icon",
+   "fieldtype": "Data",
+   "label": "Icon"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
+  },
+  {
+   "default": "0",
+   "fieldname": "allow_filters",
+   "fieldtype": "Check",
+   "label": "Allow Filters"
+  },
+  {
+   "fieldname": "roles",
+   "fieldtype": "Table",
+   "label": "Roles",
+   "options": "Custom Dashboard Widget Role"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "module": "Dashboard",
+ "modified": "2026-04-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "name": "Custom Dashboard Widget",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Dashboard Admin",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "search_fields": "title,category",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title",
+ "track_changes": 1
+}

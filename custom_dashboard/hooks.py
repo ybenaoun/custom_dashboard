@@ -4,6 +4,8 @@ app_publisher = "youssef"
 app_description = "custom dashboard"
 app_email = "youssef@youssef.com"
 app_license = "mit"
+app_logo_url = "/assets/custom_dashboard/images/custom_dashboard-logo.svg"
+app_home = "/desk/custom-dashboard"
 
 # Apps
 # ------------------
@@ -11,22 +13,36 @@ app_license = "mit"
 # required_apps = []
 
 # Each item in the list will be shown as an app in the apps page
-# add_to_apps_screen = [
-# 	{
-# 		"name": "custom_dashboard",
-# 		"logo": "/assets/custom_dashboard/logo.png",
-# 		"title": "Custom Dashboard",
-# 		"route": "/custom_dashboard",
-# 		"has_permission": "custom_dashboard.api.permission.has_app_permission"
-# 	}
-# ]
+add_to_apps_screen = [
+	{
+		"name": app_name,
+		"logo": app_logo_url,
+		"title": app_title,
+		"route": app_home,
+		"has_permission": "custom_dashboard.permissions.has_app_permission",
+	},
+	{
+		"name": "global-dashboard",
+		"logo": "/assets/custom_dashboard/images/global-dashboard-logo.svg",
+		"title": "Tableau de bord global",
+		"route": "/app/global-dashboard",
+		"has_permission": "custom_dashboard.custom_dashboard.page.global_dashboard.global_dashboard.has_desk_icon_permission",
+	},
+	{
+		"name": "admin-dashboard",
+		"logo": "/assets/custom_dashboard/images/admin-dashboard-logo.svg",
+		"title": "Admin Dashboard",
+		"route": "/app/admin-dashboard",
+		"has_permission": "custom_dashboard.custom_dashboard.page.admin_dashboard.admin_dashboard.has_desk_icon_permission",
+	},
+]
 
 # Includes in <head>
 # ------------------
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/custom_dashboard/css/custom_dashboard.css"
-# app_include_js = "/assets/custom_dashboard/js/custom_dashboard.js"
+app_include_js = ["/assets/custom_dashboard/js/chatbot.js"]
 
 # include js, css files in header of web template
 # web_include_css = "/assets/custom_dashboard/css/custom_dashboard.css"
@@ -86,7 +102,7 @@ app_license = "mit"
 # ------------
 
 # before_install = "custom_dashboard.install.before_install"
-# after_install = "custom_dashboard.install.after_install"
+after_install = "custom_dashboard.setup.after_install"
 
 # Uninstallation
 # ------------
@@ -116,29 +132,34 @@ app_license = "mit"
 
 # notification_config = "custom_dashboard.notifications.get_notification_config"
 
+# Session Boot
+# ------------
+boot_session = "custom_dashboard.boot.boot_session"
+
 # Permissions
 # -----------
 # Permissions evaluated in scripted ways
 
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+permission_query_conditions = {
+	"Custom Dashboard Widget": "custom_dashboard.permissions.get_dashboard_widget_permission_query_conditions",
+	"User Dashboard": "custom_dashboard.permissions.get_user_dashboard_permission_query_conditions",
+}
+
+has_permission = {
+	"Custom Dashboard Widget": "custom_dashboard.permissions.has_dashboard_widget_permission",
+	"User Dashboard": "custom_dashboard.permissions.has_user_dashboard_permission",
+}
 
 # Document Events
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"*": {
+		"on_update": "custom_dashboard.rag.on_rag_doc_update",
+		"on_trash": "custom_dashboard.rag.on_rag_doc_trash",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -165,6 +186,8 @@ app_license = "mit"
 # -------
 
 # before_tests = "custom_dashboard.install.before_tests"
+
+after_migrate = "custom_dashboard.setup.after_migrate"
 
 # Extend DocType Class
 # ------------------------------
@@ -250,3 +273,4 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+app_include_css = ["/assets/custom_dashboard/css/chatbot.css", "/assets/custom_dashboard/css/wizio-theme.css"]

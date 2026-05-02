@@ -1,0 +1,20 @@
+{
+ "app": "custom_dashboard",
+ "creation": "2026-04-23 12:55:00",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 1,
+ "label": "Tableau de bord global",
+ "link": "/app/global-dashboard",
+ "link_type": "External",
+ "logo_url": "/assets/custom_dashboard/images/global-dashboard-logo.svg",
+ "modified": "2026-05-02 03:10:17.990157",
+ "modified_by": "Administrator",
+ "name": "Tableau de bord global",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

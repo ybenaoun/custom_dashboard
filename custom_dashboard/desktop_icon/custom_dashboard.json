@@ -1,0 +1,21 @@
+{
+ "app": "custom_dashboard",
+ "bg_color": "blue",
+ "creation": "2026-04-25 11:40:02.367731",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon_type": "App",
+ "idx": 0,
+ "label": "Custom Dashboard",
+ "link": "/desk/custom-dashboard",
+ "link_type": "External",
+ "logo_url": "/assets/custom_dashboard/images/custom_dashboard-logo.svg",
+ "modified": "2026-05-02 03:10:17.983313",
+ "modified_by": "Administrator",
+ "name": "Custom Dashboard",
+ "owner": "Administrator",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "creation": "2026-04-22 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "role",
+  "can_view",
+  "can_use"
+ ],
+ "fields": [
+  {
+   "fieldname": "role",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Role",
+   "options": "Role"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_view",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Can View"
+  },
+  {
+   "default": "0",
+   "fieldname": "can_use",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Can Use"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-04-22 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Dashboard",
+ "name": "Custom Dashboard Widget Role",
+ "owner": "Administrator",
+ "permissions": [],
+ "quick_entry": 1,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

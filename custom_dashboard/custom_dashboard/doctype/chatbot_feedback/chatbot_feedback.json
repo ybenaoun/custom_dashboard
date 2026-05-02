@@ -1,0 +1,131 @@
+{
+  "actions": [],
+  "allow_rename": 0,
+  "autoname": "format:CHAT-FB-{####}",
+  "creation": "2026-04-26 00:00:00.000000",
+  "doctype": "DocType",
+  "editable_grid": 0,
+  "engine": "InnoDB",
+  "field_order": [
+    "user",
+    "conversation_id",
+    "rating",
+    "score",
+    "question",
+    "answer",
+    "comment",
+    "expected_answer",
+    "rag_sources_json",
+    "used_tools_json",
+    "metadata_json"
+  ],
+  "fields": [
+    {
+      "fieldname": "user",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "User",
+      "options": "User",
+      "reqd": 1
+    },
+    {
+      "fieldname": "conversation_id",
+      "fieldtype": "Link",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Conversation",
+      "options": "Chatbot Conversation"
+    },
+    {
+      "fieldname": "rating",
+      "fieldtype": "Select",
+      "in_list_view": 1,
+      "in_standard_filter": 1,
+      "label": "Rating",
+      "options": "up\ndown",
+      "reqd": 1
+    },
+    {
+      "default": "0",
+      "fieldname": "score",
+      "fieldtype": "Int",
+      "in_list_view": 1,
+      "label": "Score"
+    },
+    {
+      "fieldname": "question",
+      "fieldtype": "Long Text",
+      "label": "Question"
+    },
+    {
+      "fieldname": "answer",
+      "fieldtype": "Long Text",
+      "label": "Answer"
+    },
+    {
+      "fieldname": "comment",
+      "fieldtype": "Small Text",
+      "label": "Comment"
+    },
+    {
+      "fieldname": "expected_answer",
+      "fieldtype": "Long Text",
+      "label": "Expected Answer"
+    },
+    {
+      "fieldname": "rag_sources_json",
+      "fieldtype": "Long Text",
+      "label": "RAG Sources JSON"
+    },
+    {
+      "fieldname": "used_tools_json",
+      "fieldtype": "Long Text",
+      "label": "Used Tools JSON"
+    },
+    {
+      "fieldname": "metadata_json",
+      "fieldtype": "Long Text",
+      "label": "Metadata JSON"
+    }
+  ],
+  "in_create": 0,
+  "is_submittable": 0,
+  "istable": 0,
+  "links": [],
+  "modified": "2026-04-26 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Custom Dashboard",
+  "name": "Chatbot Feedback",
+  "owner": "Administrator",
+  "permissions": [
+    {
+      "create": 1,
+      "delete": 1,
+      "email": 0,
+      "export": 1,
+      "print": 0,
+      "read": 1,
+      "report": 1,
+      "role": "System Manager",
+      "share": 0,
+      "write": 1
+    },
+    {
+      "create": 1,
+      "delete": 0,
+      "email": 0,
+      "export": 0,
+      "match": "user",
+      "print": 0,
+      "read": 1,
+      "report": 0,
+      "role": "All",
+      "share": 0,
+      "write": 0
+    }
+  ],
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "track_changes": 1
+}
