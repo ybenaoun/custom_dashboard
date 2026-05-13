@@ -22,6 +22,7 @@ function load_vente_dashboard(wrapper) {
 	}
 
 	$parent.empty();
+	$parent.addClass("erp-compact-dashboard vente-dashboard");
 
 	frappe.require("vente_dashboard.bundle.js").then(() => {
 		wrapper.vente_dashboard_app = new custom_dashboard.ui.VenteDashboardApp({

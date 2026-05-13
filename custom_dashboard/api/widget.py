@@ -24,9 +24,18 @@ def get_widget_data(widget_name: str, filters=None):
 
 
 @frappe.whitelist()
-def list_admin_widgets():
-	"""Return widget configurations for the admin access panel."""
-	return widget_registry.list_admin_widgets()
+def list_admin_widgets(category: str | None = None):
+	"""Return widget configurations for the admin access panel.
+
+	`category` filters to a business category among Stock, Vente, Achat.
+	"""
+	return widget_registry.list_admin_widgets(category=category)
+
+
+@frappe.whitelist()
+def admin_toggle_widget_active(widget_name: str, is_active):
+	"""Admin-only: activate or deactivate a widget."""
+	return widget_registry.admin_toggle_widget_active(widget_name, is_active)
 
 
 @frappe.whitelist()

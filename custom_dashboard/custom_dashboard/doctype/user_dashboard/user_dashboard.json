@@ -10,6 +10,7 @@
   "title",
   "user",
   "module_name",
+  "is_active",
   "is_default",
   "is_shared",
   "shares",
@@ -36,6 +37,12 @@
    "fieldtype": "Select",
    "label": "Module Name",
    "options": "\nStock\nSelling\nBuying"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "label": "Is Active"
   },
   {
    "default": "0",

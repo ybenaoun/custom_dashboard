@@ -1123,7 +1123,12 @@ def ensure_transferred_pages_module():
 	Sans ça, Frappe résout le chemin disque vers `apps/frappe/frappe/desk/page/...`
 	(ancien module en base) et lève FileNotFoundError.
 	"""
-	for page_name in ("admin-dashboard", "global-dashboard"):
+	for page_name in (
+		"admin-dashboard",
+		"global-dashboard",
+		"dashboard-management",
+		"widget-management",
+	):
 		if not frappe.db.exists("Page", page_name):
 			continue
 		frappe.db.set_value(

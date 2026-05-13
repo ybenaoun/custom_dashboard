@@ -177,16 +177,21 @@
 									<span>{{ orderedDashboardItems.length }} widget(s)</span>
 								</div>
 							</div>
-							<button class="cd-icon-button" type="button" title="Plus d’options" @click="activeInspectorTab = 'properties'">
+							<a
+								v-if="userIsAdmin"
+								class="cd-icon-button"
+								title="Gestion des tableaux"
+								:href="manageDashboardsHref"
+							>
 								<span aria-hidden="true" v-html="iconSvg('more')"></span>
-								<span class="sr-only">Plus d’options</span>
-							</button>
+								<span class="sr-only">Gestion des tableaux</span>
+							</a>
 						</section>
 
 						<section class="cd-dashboard-form">
 							<div class="cd-config-title">
-								<h3>Configuration du tableau de bord</h3>
-								<p>{{ currentDashboard.name ? "Tableau relié aux données ERPNext." : "Brouillon prêt à enregistrer." }}</p>
+								<h3>Titre du tableau de bord</h3>
+								<p>{{ currentDashboard.name ? "Tableau relié aux données ERPNext. Modifiez le titre et la mise en page ci-dessous." : "Brouillon prêt à enregistrer." }}</p>
 							</div>
 							<div class="cd-field">
 								<label>Titre</label>
@@ -197,45 +202,10 @@
 									:disabled="!canEditCurrent"
 								/>
 							</div>
-
-							<div class="cd-field">
-								<label>Module de destination</label>
-								<select
-									v-model="currentDashboard.module_name"
-									class="form-control"
-									:disabled="!userIsAdmin || !canEditCurrent"
-									@change="syncModuleFlags"
-								>
-									<option value="">Aucun module</option>
-									<option
-										v-for="moduleOption in moduleOptions"
-										:key="moduleOption.value"
-										:value="moduleOption.value"
-									>
-										{{ moduleOption.label }}
-									</option>
-								</select>
-							</div>
-
-							<div class="cd-toggle-row">
-								<label class="cd-toggle">
-									<input
-										v-model="currentDashboard.is_default"
-										type="checkbox"
-										:disabled="!currentDashboard.can_manage_sharing || Boolean(currentDashboard.module_name)"
-									/>
-									<span>Défaut</span>
-								</label>
-
-								<label class="cd-toggle">
-									<input
-										v-model="currentDashboard.is_shared"
-										type="checkbox"
-										:disabled="!currentDashboard.can_manage_sharing || Boolean(currentDashboard.module_name)"
-									/>
-									<span>Partage global</span>
-								</label>
-							</div>
+							<p class="cd-form-hint">
+								La catégorie, l'activation et les accès se gèrent depuis la page
+								<strong>Gestion des tableaux</strong>.
+							</p>
 						</section>
 
 						<section class="cd-grid-stage">
@@ -321,105 +291,14 @@
 									</div>
 								</header>
 
-								<div
-									v-if="item.definition?.allow_filters && visibleFilterFields(item).length"
-									class="cd-filter-box"
-									:class="{ 'is-collapsed': item.filtersCollapsed }"
-								>
-									<div class="cd-filter-toolbar">
-										<button
-											class="btn btn-default btn-xs cd-filter-toggle"
-											type="button"
-											@click="toggleItemFilters(item)"
-										>
-											{{ item.filtersCollapsed ? "Afficher les filtres" : "Masquer les filtres" }}
-										</button>
-										<span v-if="item.filtersCollapsed" class="cd-filter-summary">
-											{{ itemFilterSummary(item) }}
-										</span>
-									</div>
-
-									<template v-if="!item.filtersCollapsed">
-										<div class="cd-filter-grid">
-											<div
-												v-for="field in visibleFilterFields(item)"
-												:key="field.fieldname"
-												class="cd-field"
-											>
-												<label>{{ field.label }}</label>
-
-												<select
-													v-if="field.fieldtype === 'Select'"
-													v-model="item.filters[field.fieldname]"
-													class="form-control"
-													:disabled="!canEditCurrent || !item.definition?.can_use"
-												>
-													<option
-														v-for="option in field.options || []"
-														:key="option.value"
-														:value="option.value"
-													>
-														{{ option.label }}
-													</option>
-												</select>
-
-												<input
-													v-else-if="field.fieldtype === 'Date'"
-													v-model="item.filters[field.fieldname]"
-													class="form-control"
-													type="date"
-													:disabled="!canEditCurrent || !item.definition?.can_use"
-												/>
-
-												<input
-													v-else-if="field.fieldtype === 'Int'"
-													v-model.number="item.filters[field.fieldname]"
-													class="form-control"
-													type="number"
-													:min="field.min || 0"
-													:max="field.max || 9999"
-													:disabled="!canEditCurrent || !item.definition?.can_use"
-												/>
-
-												<label v-else-if="field.fieldtype === 'Check'" class="cd-toggle">
-													<input
-														v-model="item.filters[field.fieldname]"
-														type="checkbox"
-														:disabled="!canEditCurrent || !item.definition?.can_use"
-													/>
-													<span>{{ field.label }}</span>
-												</label>
-
-												<input
-													v-else
-													v-model="item.filters[field.fieldname]"
-													class="form-control"
-													type="text"
-													:disabled="!canEditCurrent || !item.definition?.can_use"
-												/>
-											</div>
-										</div>
-
-										<div class="cd-filter-actions">
-											<button
-												class="btn btn-default btn-sm"
-												type="button"
-												:disabled="!item.definition?.can_use"
-												@click="applyItemFilters(item)"
-											>
-												Appliquer
-											</button>
-											<button
-												class="btn btn-default btn-sm"
-												type="button"
-												:disabled="!canEditCurrent"
-												@click="resetItemFilters(item)"
-											>
-												Réinitialiser
-											</button>
-										</div>
-									</template>
-								</div>
+								<!--
+									La zone de filtres par-widget a ete supprimee du builder.
+									Le builder ne sert qu'a configurer la STRUCTURE des dashboards.
+									Les valeurs actives des filtres viennent uniquement
+									des pages finales (stock-dashboard / vente-dashboard / achat-dashboard).
+									Les meta donnees (filters_schema, default_filters, supported_filters)
+									restent disponibles cote API pour validation serveur.
+								-->
 
 								<div class="cd-widget-body">
 										<div v-if="item.loading" class="cd-state">Chargement du widget…</div>
@@ -619,370 +498,6 @@
 				</template>
 			</main>
 
-				<aside class="cd-panel cd-side-panel">
-					<div class="cd-inspector-head">
-						<div>
-							<h2>Inspecteur</h2>
-							<p>{{ canEditCurrent ? "Réglages du tableau actif" : "Lecture seule" }}</p>
-						</div>
-						<span class="cd-pill">{{ selectedModuleLabel || "Personnel" }}</span>
-					</div>
-
-					<div class="cd-side-tabs">
-						<button
-							class="cd-tab"
-							:class="{ 'is-active': activeInspectorTab === 'properties' }"
-							type="button"
-							@click="activeInspectorTab = 'properties'"
-						>
-							Propriétés
-						</button>
-						<button
-							class="cd-tab"
-							:class="{ 'is-active': activeInspectorTab === 'dashboards' }"
-							type="button"
-							@click="activeInspectorTab = 'dashboards'"
-						>
-							Tableaux
-						</button>
-						<button
-							class="cd-tab"
-							:class="{ 'is-active': activeInspectorTab === 'history' }"
-							type="button"
-							@click="activeInspectorTab = 'history'"
-						>
-							Historique
-						</button>
-					</div>
-
-					<section v-if="activeInspectorTab === 'properties'" class="cd-side-section">
-						<div v-if="!currentDashboard" class="cd-state">
-							Créez un tableau de bord pour afficher ses propriétés.
-						</div>
-						<template v-else>
-							<div class="cd-property-list">
-								<label class="cd-property-field">
-									<span>Titre</span>
-									<input
-										v-model="currentDashboard.title"
-										class="form-control"
-										type="text"
-										:disabled="!canEditCurrent"
-									/>
-								</label>
-
-								<label class="cd-property-field">
-									<span>Module</span>
-									<select
-										v-model="currentDashboard.module_name"
-										class="form-control"
-										:disabled="!userIsAdmin || !canEditCurrent"
-										@change="syncModuleFlags"
-									>
-										<option value="">Aucun module</option>
-										<option
-											v-for="moduleOption in moduleOptions"
-											:key="moduleOption.value"
-											:value="moduleOption.value"
-										>
-											{{ moduleOption.label }}
-										</option>
-									</select>
-								</label>
-
-								<div class="cd-readonly-field">
-									<span>Disposition</span>
-									<strong>12 colonnes · Déplacement libre</strong>
-								</div>
-
-								<div class="cd-readonly-field">
-									<span>Partage</span>
-									<strong>{{ sharingSummary }}</strong>
-								</div>
-							</div>
-
-							<label class="cd-toggle cd-toggle-card">
-								<input
-									v-model="currentDashboard.is_default"
-									type="checkbox"
-									:disabled="!currentDashboard.can_manage_sharing || Boolean(currentDashboard.module_name)"
-								/>
-								<span>
-									<strong>Défaut</strong>
-									<small>Définir comme tableau de bord par défaut</small>
-								</span>
-							</label>
-
-							<section class="cd-side-block">
-								<h3>Actions</h3>
-								<div class="cd-inspector-actions">
-									<button
-										class="btn btn-default"
-										type="button"
-										:disabled="!currentDashboard || !canEditCurrent || !orderedDashboardItems.length"
-										@click="resetDashboardLayout"
-									>
-										Réinitialiser
-									</button>
-									<button
-										class="btn btn-default cd-danger-button"
-										type="button"
-										disabled
-										title="La suppression sera reliée au serveur ultérieurement."
-									>
-										Supprimer
-									</button>
-								</div>
-							</section>
-
-							<section class="cd-side-block">
-								<h3>Tableaux existants</h3>
-								<div v-if="dashboardsLoading" class="cd-state">Chargement des tableaux…</div>
-								<div v-else-if="!dashboards.length" class="cd-state">Aucun tableau trouvé.</div>
-								<div v-else class="cd-dashboard-list is-compact">
-									<button
-										v-for="dashboard in dashboardPreviewRows"
-										:key="dashboard.name"
-										class="cd-dashboard-row"
-										:class="{ 'is-active': currentDashboard?.name === dashboard.name }"
-										type="button"
-										@click="openDashboard(dashboard.name)"
-									>
-										<div>
-											<strong>{{ dashboard.title }}</strong>
-											<p>{{ relativeModifiedLabel(dashboard.modified) }}</p>
-										</div>
-										<span class="cd-chip">{{ moduleDisplayLabel(dashboard.module_name) || "Personnel" }}</span>
-									</button>
-								</div>
-								<button class="cd-link-button" type="button" @click="activeInspectorTab = 'dashboards'">
-									Voir tous les tableaux de bord
-								</button>
-							</section>
-						</template>
-					</section>
-
-					<section v-else-if="activeInspectorTab === 'dashboards'" class="cd-side-section">
-						<div class="cd-panel-head">
-							<div>
-								<h2>Tableaux existants</h2>
-								<p>Vos tableaux personnels, partagés et éditables.</p>
-							</div>
-							<span class="cd-pill">{{ dashboards.length }}</span>
-						</div>
-
-						<div v-if="dashboardsLoading" class="cd-state">Chargement des tableaux…</div>
-						<div v-else-if="!dashboards.length" class="cd-state">Aucun tableau trouvé.</div>
-						<div v-else class="cd-dashboard-list">
-							<button
-								v-for="dashboard in dashboards"
-								:key="dashboard.name"
-								class="cd-dashboard-row"
-								:class="{ 'is-active': currentDashboard?.name === dashboard.name }"
-								type="button"
-								@click="openDashboard(dashboard.name)"
-							>
-								<div>
-									<strong>{{ dashboard.title }}</strong>
-									<p>
-										{{ dashboard.user === currentUser ? "Moi" : `Propriétaire : ${dashboard.user}` }}
-									</p>
-								</div>
-								<div class="cd-dashboard-flags">
-									<span v-if="dashboard.is_default" class="cd-chip">Défaut</span>
-									<span v-if="dashboard.is_shared" class="cd-chip">Partagé</span>
-									<span v-if="dashboard.module_name" class="cd-chip">
-										{{ moduleDisplayLabel(dashboard.module_name) }}
-									</span>
-									<span v-if="dashboard.can_write && !dashboard.is_owner" class="cd-chip">
-										Modifiable
-									</span>
-								</div>
-							</button>
-						</div>
-
-						<section class="cd-side-block cd-share-admin">
-							<h3>Partage avancé</h3>
-							<div v-if="!currentDashboard" class="cd-state">
-								Ouvrez ou créez un tableau de bord pour gérer son partage.
-							</div>
-							<div v-else-if="currentDashboard.module_name" class="cd-state">
-								Le tableau de bord du module {{ selectedModuleLabel }} est partagé automatiquement.
-							</div>
-							<div v-else-if="!currentDashboard.can_manage_sharing" class="cd-state">
-								Seul le propriétaire ou un administrateur peut modifier le partage.
-							</div>
-							<div v-else class="cd-share-box">
-								<label class="cd-toggle">
-									<input v-model="currentDashboard.is_shared" type="checkbox" />
-									<span>Visible pour tous les rôles autorisés</span>
-								</label>
-
-								<div class="cd-share-list">
-									<div
-										v-for="(share, index) in currentDashboard.shares"
-										:key="share.local_id"
-										class="cd-share-row"
-									>
-										<select v-model="share.share_type" class="form-control">
-											<option value="User">Utilisateur</option>
-											<option value="Role">Rôle</option>
-										</select>
-
-										<select
-											v-if="share.share_type === 'User'"
-											v-model="share.user"
-											class="form-control"
-										>
-											<option value="">Choisir un utilisateur</option>
-											<option
-												v-for="option in sharingOptions.users"
-												:key="option.value"
-												:value="option.value"
-											>
-												{{ option.label }}
-											</option>
-										</select>
-
-										<select
-											v-else
-											v-model="share.role"
-											class="form-control"
-										>
-											<option value="">Choisir un rôle</option>
-											<option
-												v-for="option in sharingOptions.roles"
-												:key="option.value"
-												:value="option.value"
-											>
-												{{ option.label }}
-											</option>
-										</select>
-
-										<label class="cd-toggle">
-											<input v-model="share.can_edit" type="checkbox" />
-											<span>Peut modifier</span>
-										</label>
-
-										<button
-											class="btn btn-default btn-sm"
-											type="button"
-											@click="removeShareRow(index)"
-										>
-											Retirer
-										</button>
-									</div>
-								</div>
-
-								<div class="cd-inline-actions">
-									<button class="btn btn-default btn-sm" type="button" @click="addShareRow('User')">
-										Ajouter un utilisateur
-									</button>
-									<button class="btn btn-default btn-sm" type="button" @click="addShareRow('Role')">
-										Ajouter un rôle
-									</button>
-								</div>
-							</div>
-						</section>
-					</section>
-
-					<section v-else class="cd-side-section">
-						<div class="cd-panel-head">
-							<div>
-								<h2>Historique</h2>
-								<p>Suivi sobre des états du constructeur.</p>
-							</div>
-						</div>
-
-						<div class="cd-history-list">
-							<div class="cd-history-row">
-								<span class="cd-status-dot" :class="{ 'is-dirty': hasUnsavedChanges }"></span>
-								<div>
-									<strong>{{ saveStatusLabel }}</strong>
-									<p>{{ currentDashboard?.name ? "Tableau déjà enregistré dans ERPNext." : "Brouillon local non enregistré." }}</p>
-								</div>
-							</div>
-							<div class="cd-history-row">
-								<span class="cd-status-dot is-saved"></span>
-								<div>
-									<strong>{{ orderedDashboardItems.length }} widget(s)</strong>
-									<p>{{ orderedDashboardItems.length ? "Canvas prêt pour l’aperçu." : "Aucun widget ajouté." }}</p>
-								</div>
-							</div>
-						</div>
-
-						<section v-if="userIsAdmin" class="cd-side-block cd-admin-access">
-							<div class="cd-panel-head">
-								<div>
-									<h2>Administration des accès</h2>
-									<p>Activez les widgets et gérez leurs droits par rôle.</p>
-								</div>
-							</div>
-
-						<div v-if="adminWidgetsLoading" class="cd-state">Chargement des widgets d’administration…</div>
-						<div v-else class="cd-admin-shell">
-							<div class="cd-admin-list">
-								<button
-									v-for="widget in adminWidgets"
-								:key="widget.name"
-								class="cd-admin-widget-row"
-								:class="{ 'is-active': selectedAdminWidgetName === widget.name }"
-								type="button"
-								@click="selectAdminWidget(widget.name)"
-							>
-								<div>
-									<strong>{{ widget.title }}</strong>
-									<p>{{ widget.category || "Général" }}</p>
-								</div>
-								<span class="cd-chip" :class="{ 'is-warning': !widget.is_active }">
-									{{ widget.is_active ? "Actif" : "Inactif" }}
-									</span>
-								</button>
-							</div>
-
-							<div v-if="adminForm" class="cd-admin-form">
-								<label class="cd-toggle">
-									<input v-model="adminForm.is_active" type="checkbox" />
-									<span>Widget actif dans la bibliothèque</span>
-								</label>
-
-							<div class="cd-admin-description">
-								<strong>{{ adminForm.title }}</strong>
-								<p>{{ adminForm.description }}</p>
-							</div>
-
-							<div class="cd-admin-matrix">
-								<div class="cd-admin-matrix-head">
-									<span>Rôle</span>
-									<span>Voir</span>
-									<span>Utiliser</span>
-								</div>
-								<div
-									v-for="roleRow in adminForm.roles"
-									:key="roleRow.role"
-									class="cd-admin-matrix-row"
-								>
-									<span>{{ roleRow.role }}</span>
-									<input v-model="roleRow.can_view" type="checkbox" />
-									<input v-model="roleRow.can_use" type="checkbox" />
-								</div>
-							</div>
-
-							<button
-								class="btn btn-primary"
-								type="button"
-								:disabled="adminSaving"
-								@click="saveAdminWidget"
-							>
-									{{ adminSaving ? "Enregistrement…" : "Enregistrer les accès" }}
-								</button>
-							</div>
-							<div v-else class="cd-state">Sélectionnez un widget pour éditer ses accès.</div>
-						</div>
-						</section>
-						<div v-else class="cd-state">Aucun historique détaillé disponible pour le moment.</div>
-					</section>
-			</aside>
 		</div>
 	</div>
 </template>
@@ -1064,7 +579,6 @@ export default {
 				localId: 1,
 				librarySearch: "",
 				activeTab: "dashboards",
-				activeInspectorTab: "properties",
 				activeLibraryFilter: "all",
 				baselineSignature: "",
 				saveSucceeded: false,
@@ -1078,15 +592,6 @@ export default {
 				height: 0,
 				over: null,
 			},
-			sharingOptions: {
-				users: [],
-				roles: [],
-			},
-			adminWidgets: [],
-			adminWidgetsLoading: false,
-			adminSaving: false,
-			adminForm: null,
-			selectedAdminWidgetName: "",
 			chartInstances: {},
 			isFullscreenPreview: false,
 			moduleOptions: MODULE_OPTIONS,
@@ -1138,23 +643,8 @@ export default {
 				}
 				return this.saveSucceeded ? "Enregistré" : "Enregistré";
 			},
-			sharingSummary() {
-				if (!this.currentDashboard) {
-					return "Moi uniquement";
-				}
-				if (this.currentDashboard.module_name) {
-					return `Module ${this.selectedModuleLabel}`;
-				}
-				if (this.currentDashboard.is_shared) {
-					return "Partage global";
-				}
-				if ((this.currentDashboard.shares || []).length) {
-					return `${this.currentDashboard.shares.length} partage(s) ciblé(s)`;
-				}
-				return "Moi uniquement";
-			},
-			dashboardPreviewRows() {
-				return this.dashboards.slice(0, 3);
+			manageDashboardsHref() {
+				return "/app/dashboard-management";
 			},
 			dashboardSubtitle() {
 				if (!this.currentDashboard) {
@@ -1399,8 +889,6 @@ export default {
 				await Promise.all([
 					this.loadWidgets(),
 					this.loadDashboards(),
-					this.loadSharingOptions(),
-					this.userIsAdmin ? this.loadAdminWidgets() : Promise.resolve(),
 				]);
 				if (this.dashboards.length) {
 					const preferredDashboard =
@@ -1434,76 +922,6 @@ export default {
 					(await this.frappe.xcall("custom_dashboard.api.dashboard.list_user_dashboards")) || [];
 			} finally {
 				this.dashboardsLoading = false;
-			}
-		},
-		async loadSharingOptions() {
-			this.sharingOptions =
-				(await this.frappe.xcall("custom_dashboard.api.dashboard.get_sharing_options")) || {
-					users: [],
-					roles: [],
-				};
-		},
-		async loadAdminWidgets() {
-			this.adminWidgetsLoading = true;
-			try {
-				this.adminWidgets =
-					(await this.frappe.xcall("custom_dashboard.api.widget.list_admin_widgets")) || [];
-				if (!this.selectedAdminWidgetName && this.adminWidgets.length) {
-					await this.selectAdminWidget(this.adminWidgets[0].name);
-				}
-			} finally {
-				this.adminWidgetsLoading = false;
-			}
-		},
-		async selectAdminWidget(name) {
-			this.selectedAdminWidgetName = name;
-			this.adminForm = await this.frappe.xcall(
-				"custom_dashboard.api.widget.get_widget_admin_definition",
-				{ widget_name: name }
-			);
-			this.adminForm.is_active = Boolean(this.adminForm.is_active);
-			this.adminForm.roles = (this.adminForm.roles || []).map((row) => ({
-				role: row.role,
-				can_view: Boolean(row.can_view),
-				can_use: Boolean(row.can_use),
-			}));
-		},
-		async saveAdminWidget() {
-			if (!this.adminForm) {
-				return;
-			}
-			this.adminSaving = true;
-			try {
-				this.adminForm = await this.frappe.xcall("custom_dashboard.api.widget.save_widget_access", {
-					doc: {
-						name: this.adminForm.name,
-						is_active: this.adminForm.is_active ? 1 : 0,
-						description: this.adminForm.description,
-						roles: this.adminForm.roles.map((row) => ({
-							role: row.role,
-							can_view: row.can_view ? 1 : 0,
-							can_use: row.can_use ? 1 : 0,
-						})),
-					},
-				});
-				this.adminForm.is_active = Boolean(this.adminForm.is_active);
-				this.adminForm.roles = (this.adminForm.roles || []).map((row) => ({
-					role: row.role,
-					can_view: Boolean(row.can_view),
-					can_use: Boolean(row.can_use),
-				}));
-				await Promise.all([this.loadAdminWidgets(), this.loadWidgets()]);
-				if (this.currentDashboard?.name) {
-					await this.openDashboard(this.currentDashboard.name);
-				}
-				this.notify("Les accès du widget ont été enregistrés.", "green");
-			} catch (error) {
-				this.pageError = this.parseError(
-					error,
-					"Impossible d'enregistrer les accès du widget."
-				);
-			} finally {
-				this.adminSaving = false;
 			}
 		},
 		normalizeDashboard(doc) {
@@ -1703,19 +1121,6 @@ export default {
 				this.clearDragState();
 				this.$nextTick(() => this.renderAllCharts());
 			},
-		addShareRow(shareType = "User") {
-			if (!this.currentDashboard) {
-				return;
-			}
-			this.currentDashboard.shares.push(
-				this.normalizeShareRow({
-					share_type: shareType,
-				})
-			);
-		},
-		removeShareRow(index) {
-			this.currentDashboard.shares.splice(index, 1);
-		},
 		addWidget(widget) {
 			const nextY = this.nextAvailableRow();
 			const suggestedSize = this.getSuggestedWidgetSize(widget);
@@ -1769,7 +1174,6 @@ export default {
 				this.currentDashboard = this.normalizeDashboard(doc);
 				await this.refreshAllItems();
 				this.selectedDashboardName = name;
-				this.activeInspectorTab = "properties";
 				this.rememberDashboardState();
 			} catch (error) {
 				this.pageError = this.parseError(error, "Impossible de charger le tableau sélectionné.");
@@ -2503,11 +1907,17 @@ function itemPayloadSafe(item) {
 
 .cd-layout {
 	display: grid;
-	grid-template-columns: minmax(220px, 236px) minmax(0, 1fr) minmax(252px, 284px);
-	grid-template-areas: "library workspace sidebar";
+	grid-template-columns: minmax(220px, 236px) minmax(0, 1fr);
+	grid-template-areas: "library workspace";
 	gap: 18px;
 	margin-top: 18px;
 	align-items: start;
+}
+
+.cd-form-hint {
+	margin: 8px 0 0;
+	font-size: 12.5px;
+	color: var(--cd-muted, #6b7280);
 }
 
 .cd-panel {

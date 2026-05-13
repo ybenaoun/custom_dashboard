@@ -18,20 +18,28 @@ cp .env.example .env
 ## Lancer le service
 
 ```bash
-uvicorn app.main:app --reload --port 9000
+./scripts/bench_start.sh
 ```
 
-Le service ecoute sur `http://localhost:9000`. Doc OpenAPI : `http://localhost:9000/docs`.
+Le service ecoute sur `http://127.0.0.1:9001` par defaut. Doc OpenAPI : `http://127.0.0.1:9001/docs`.
+
+Avec le bench, le service est lance automatiquement par `bench start` via le `Procfile` racine :
+
+```Procfile
+chatbot_service: bash apps/custom_dashboard/chatbot_service/scripts/bench_start.sh
+```
+
+Variables optionnelles pour le lanceur : `CHATBOT_SERVICE_HOST`, `CHATBOT_SERVICE_PORT`, `CHATBOT_SERVICE_RELOAD`.
 
 ## Tester
 
 ```bash
 # 1. Health (pas d'auth)
-curl http://localhost:9000/health
+curl http://127.0.0.1:9001/health
 
 # 2. Chat (JWT requis)
 TOKEN=$(python scripts/generate_test_token.py)
-curl -X POST http://localhost:9000/chat \
+curl -X POST http://127.0.0.1:9001/chat \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"message":"Bonjour, tu peux te presenter ?","language":"fr"}'
@@ -52,6 +60,7 @@ chatbot_service/
     api/health.py          # GET /health
     api/chat.py            # POST /chat
   scripts/
+    bench_start.sh         # Lance FastAPI/Cohere depuis bench start
     generate_test_token.py # JWT de test pour curl
   requirements.txt
   .env.example

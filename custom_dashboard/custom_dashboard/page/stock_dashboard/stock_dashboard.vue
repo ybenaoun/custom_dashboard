@@ -48,29 +48,31 @@
 				</div>
 			</div>
 
-			<div v-if="kpiCards.length" class="sd-kpis">
-				<article
-					v-for="(kpi, idx) in kpiCards"
-					:key="`kpi-${kpi.local_id}`"
-					class="sd-kpi"
-					:style="{ animationDelay: `${idx * 60}ms` }"
-				>
-					<div class="sd-kpi-icon">{{ kpi.glyph }}</div>
-					<div class="sd-kpi-body">
-						<span class="sd-kpi-label">{{ kpi.label }}</span>
-						<strong class="sd-kpi-value">{{ kpi.displayValue }}</strong>
-						<span v-if="kpi.secondary" class="sd-kpi-secondary">{{ kpi.secondary }}</span>
-					</div>
-				</article>
-			</div>
+			<!--
+				Le KPI strip a ete retire : les widgets numeriques sont desormais
+				affiches en tete de la grille principale (tri par type), ce qui
+				evite la duplication visuelle.
+			-->
 		</header>
+
+		<!-- Barre de filtres globale (DashboardFilterBar) - construite via frappe.ui.form.make_control -->
+		<div ref="filterBarHost" class="sd-filterbar-host"></div>
 
 		<div v-if="pageError" class="sd-banner is-error" role="alert">
 			<span class="sd-banner-icon">!</span>
 			<span>{{ pageError }}</span>
 		</div>
 
-		<div v-if="loading && !dashboard" class="sd-grid sd-grid-skeleton">
+		<div v-if="dashboard && dashboard.disabled" class="sd-empty sd-empty-large sd-disabled">
+			<div class="sd-empty-illustration">⛔</div>
+			<h3>{{ dashboard.disabled_message || disabledMessage }}</h3>
+			<p>
+				Contactez un administrateur pour réactiver ce tableau depuis la page
+				« Gestion des tableaux ».
+			</p>
+		</div>
+
+		<div v-else-if="loading && !dashboard" class="sd-grid sd-grid-skeleton">
 			<div v-for="n in 6" :key="`skel-${n}`" class="sd-skel-card">
 				<div class="sd-skel-line short"></div>
 				<div class="sd-skel-line tall"></div>
@@ -78,7 +80,7 @@
 			</div>
 		</div>
 
-		<div v-else-if="!dashboard" class="sd-empty sd-empty-large">
+		<div v-else-if="!dashboard && !pageError" class="sd-empty sd-empty-large">
 			<div class="sd-empty-illustration" v-html="theme.icon"></div>
 			<h3>Aucun tableau de bord publié pour {{ resolvedModuleLabel }}</h3>
 			<p>Configurez les widgets et la mise en page depuis le constructeur.</p>
@@ -271,40 +273,41 @@ const GRID_GAP = 14;
 
 let LOCAL_ID = 1;
 
+/**
+ * Palette UNIFIEE pour les 3 pages (stock / vente / achat).
+ * On garde la meme charte visuelle pour cohesion. Seul l'icone et le
+ * petit "moduleHint" de couleur varient pour distinguer la page sans
+ * casser l'unite chromatique.
+ */
+const SHARED_THEME = {
+	accent: "#4f46e5",        // indigo-600
+	accentDark: "#3730a3",    // indigo-800
+	accentSoft: "rgba(79, 70, 229, 0.10)",
+	gradFrom: "#1e293b",      // slate-800
+	gradTo: "#4f46e5",        // indigo-600
+	surfaceTint: "rgba(79, 70, 229, 0.04)",
+	chartPalette: ["#4f46e5", "#10b981", "#f59e0b", "#06b6d4", "#ec4899", "#8b5cf6"],
+};
+
+const MODULE_ICONS = {
+	stock: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>',
+	vente: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h7v7"/></svg>',
+	achat: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.5 11.5a2 2 0 0 0 2 1.5h7a2 2 0 0 0 2-1.5L21 8H6"/></svg>',
+};
+
 const THEME_PRESETS = {
-	stock: {
-		key: "stock",
-		accent: "#0f766e",
-		accentDark: "#115e59",
-		accentSoft: "rgba(15, 118, 110, 0.10)",
-		gradFrom: "#0f766e",
-		gradTo: "#0ea5a4",
-		surfaceTint: "rgba(15, 118, 110, 0.04)",
-		chartPalette: ["#0f766e", "#22c55e", "#0ea5e9", "#f59e0b", "#a855f7", "#ef4444"],
-		icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4"/><path d="M3 17l9 4 9-4"/></svg>',
-	},
-	vente: {
-		key: "vente",
-		accent: "#1d4ed8",
-		accentDark: "#1e3a8a",
-		accentSoft: "rgba(29, 78, 216, 0.10)",
-		gradFrom: "#1d4ed8",
-		gradTo: "#3b82f6",
-		surfaceTint: "rgba(29, 78, 216, 0.04)",
-		chartPalette: ["#1d4ed8", "#3b82f6", "#22c55e", "#f59e0b", "#ec4899", "#a855f7"],
-		icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-5 4 4 8-9"/><path d="M14 7h7v7"/></svg>',
-	},
-	achat: {
-		key: "achat",
-		accent: "#b45309",
-		accentDark: "#92400e",
-		accentSoft: "rgba(180, 83, 9, 0.10)",
-		gradFrom: "#b45309",
-		gradTo: "#f59e0b",
-		surfaceTint: "rgba(180, 83, 9, 0.04)",
-		chartPalette: ["#b45309", "#f59e0b", "#0ea5e9", "#22c55e", "#a855f7", "#ef4444"],
-		icon: '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/><path d="M3 4h2l2.5 11.5a2 2 0 0 0 2 1.5h7a2 2 0 0 0 2-1.5L21 8H6"/></svg>',
-	},
+	stock: { key: "stock", ...SHARED_THEME, icon: MODULE_ICONS.stock },
+	vente: { key: "vente", ...SHARED_THEME, icon: MODULE_ICONS.vente },
+	achat: { key: "achat", ...SHARED_THEME, icon: MODULE_ICONS.achat },
+};
+
+// Priorite d'affichage des widgets dans la grille (KPI -> chart -> table -> reste).
+const TYPE_ORDER = {
+	number_card: 0,
+	chart: 1,
+	table: 2,
+	ai_insight: 3,
+	custom: 4,
 };
 
 function moduleNameToThemeKey(moduleName) {
@@ -347,6 +350,8 @@ export default {
 			pageError: "",
 			chartInstances: {},
 			lastRefreshAt: null,
+			activeFilters: {},
+			filterBar: null,
 		};
 	},
 	computed: {
@@ -361,6 +366,9 @@ export default {
 		},
 		resolvedPageTitle() {
 			return (this.pageTitle || `Tableau de bord ${this.resolvedModuleLabel}`).trim();
+		},
+		disabledMessage() {
+			return "Ce tableau de bord est actuellement désactivé par l'administrateur.";
 		},
 		themeKey() {
 			const preset = this.themePreset;
@@ -397,7 +405,15 @@ export default {
 		},
 		orderedItems() {
 			if (!this.dashboard?.items) return [];
-			return [...this.dashboard.items].sort((a, b) => a.y - b.y || a.x - b.x);
+			// Tri principal : par type (KPI > chart > table > AI > custom).
+			// Tri secondaire : par position d'origine du builder (y, x) pour stabilite.
+			return [...this.dashboard.items].sort((a, b) => {
+				const ta = TYPE_ORDER[this.itemType(a)] ?? 99;
+				const tb = TYPE_ORDER[this.itemType(b)] ?? 99;
+				if (ta !== tb) return ta - tb;
+				if (a.y !== b.y) return a.y - b.y;
+				return a.x - b.x;
+			});
 		},
 		canvasRows() {
 			const rows = this.orderedItems.map((item) => item.y + item.h);
@@ -410,22 +426,6 @@ export default {
 				gap: `${GRID_GAP}px`,
 				minHeight: `${this.canvasRows * GRID_ROW_HEIGHT}px`,
 			};
-		},
-		kpiCards() {
-			const cards = this.orderedItems
-				.filter((item) => this.itemType(item) === "number_card" && !item.loading && !item.error)
-				.slice(0, 4)
-				.map((item) => {
-					const payload = this.itemPayload(item);
-					return {
-						local_id: item.local_id,
-						label: this.numberCardLabel(item),
-						displayValue: this.formatNumberCardValue(item),
-						secondary: this.numberCardSecondary(item),
-						glyph: payload.icon || "◆",
-					};
-				});
-			return cards;
 		},
 		lastRefreshLabel() {
 			if (!this.lastRefreshAt) return "";
@@ -440,12 +440,43 @@ export default {
 		},
 	},
 	async mounted() {
+		await this.setupFilterBar();
 		await this.load();
 	},
 	beforeUnmount() {
 		this.destroyCharts();
+		if (this.filterBar?.destroy) this.filterBar.destroy();
+		this.filterBar = null;
 	},
 	methods: {
+		async setupFilterBar() {
+			if (!this.$refs.filterBarHost) return;
+			try {
+				await this.frappe.require("dashboard_filters.bundle.js");
+			} catch (error) {
+				console.warn("[custom_dashboard] DashboardFilterBar bundle not loaded", error);
+				return;
+			}
+
+			const FilterBar = window.custom_dashboard?.ui?.DashboardFilterBar;
+			if (!FilterBar) return;
+
+			if (this.filterBar?.destroy) this.filterBar.destroy();
+
+			this.filterBar = new FilterBar({
+				wrapper: this.$refs.filterBarHost,
+				pageType: this.themeKey,
+				onChange: (values) => {
+					this.activeFilters = values || {};
+				},
+				onRefresh: async (values) => {
+					this.activeFilters = values || {};
+					await this.refreshAllItems();
+					this.lastRefreshAt = Date.now();
+				},
+			});
+			this.filterBar.render();
+		},
 		async load() {
 			this.loading = true;
 			this.pageError = "";
@@ -455,8 +486,10 @@ export default {
 					{ module_name: this.resolvedModuleName }
 				);
 				this.dashboard = doc ? this.normalizeDashboard(doc) : null;
-				if (this.dashboard) {
+				if (this.dashboard && !this.dashboard.disabled) {
 					await this.refreshAllItems();
+				} else {
+					this.destroyCharts();
 				}
 				this.lastRefreshAt = Date.now();
 			} catch (error) {
@@ -477,6 +510,9 @@ export default {
 				title: doc.title,
 				user: doc.user,
 				module_name: doc.module_name,
+				is_active: doc.is_active === undefined ? 1 : Number(doc.is_active),
+				disabled: Boolean(doc.disabled),
+				disabled_message: doc.disabled_message || "",
 				items: (doc.items || []).map((item) => this.normalizeItem(item)),
 			};
 		},
@@ -520,9 +556,13 @@ export default {
 					item.preview = null;
 					return;
 				}
+				// IMPORTANT : on n'envoie JAMAIS item.filters_json (configure dans le builder).
+				// Les filtres actifs viennent UNIQUEMENT de la barre globale de la page finale.
+				// Le serveur (normalize_filters) ne retient que les champs declares dans le
+				// schema du widget = equivalent "supported_filters".
 				item.preview = await this.frappe.xcall("custom_dashboard.api.widget.get_widget_data", {
 					widget_name: item.widget,
-					filters: item.filters_json || "",
+					filters: JSON.stringify(this.activeFilters || {}),
 				});
 			} catch (error) {
 				item.error = this.parseError(error, "Impossible de charger ce widget.");
@@ -583,15 +623,11 @@ export default {
 			item.aiRegenerating = true;
 			item.error = "";
 			try {
-				let baseFilters = {};
-				if (item.filters_json) {
-					try {
-						baseFilters = JSON.parse(item.filters_json) || {};
-					} catch {
-						baseFilters = {};
-					}
-				}
-				const filtersPayload = JSON.stringify({ ...baseFilters, force_refresh: 1 });
+				// Filtres globaux uniquement (pas item.filters_json du builder).
+				const filtersPayload = JSON.stringify({
+					...(this.activeFilters || {}),
+					force_refresh: 1,
+				});
 				item.preview = await this.frappe.xcall(
 					"custom_dashboard.api.widget.get_widget_data",
 					{ widget_name: item.widget, filters: filtersPayload }
@@ -991,6 +1027,14 @@ export default {
 @keyframes sd-rise {
 	from { opacity: 0; transform: translateY(6px); }
 	to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== FILTER BAR HOST (le contenu est rendu par DashboardFilterBar) ========== */
+.sd-filterbar-host {
+	margin-bottom: 12px;
+}
+.sd-filterbar-host:empty {
+	display: none;
 }
 
 /* ========== BANNER ========== */

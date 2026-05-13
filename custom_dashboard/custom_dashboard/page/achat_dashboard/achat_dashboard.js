@@ -22,6 +22,7 @@ function load_achat_dashboard(wrapper) {
 	}
 
 	$parent.empty();
+	$parent.addClass("erp-compact-dashboard achat-dashboard");
 
 	frappe.require("achat_dashboard.bundle.js").then(() => {
 		wrapper.achat_dashboard_app = new custom_dashboard.ui.AchatDashboardApp({

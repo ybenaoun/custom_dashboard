@@ -117,3 +117,45 @@ def post_json(
 	if not isinstance(data, dict):
 		raise AIServiceError("Reponse FastAPI invalide.")
 	return data
+
+
+def generate_with_cohere(
+	system_message: str,
+	user_message: str,
+	*,
+	language: str = "fr",
+	temperature: float | None = None,
+	max_tokens: int | None = None,
+	repair_payload: dict[str, Any] | None = None,
+	timeout: float | None = None,
+) -> dict[str, Any]:
+	"""Generic Cohere call routed through the existing FastAPI service.
+
+	Returns the FastAPI ChatResponse dict (keys: response, model, input_tokens,
+	output_tokens, used_tools). The `response` field is the raw text answer; for
+	JSON-only tasks the BI dashboard task forces the JSON object as a string.
+
+	This helper is the ONLY supported entrypoint for non-chatbot apps that want to
+	reuse the shared Cohere client. It must remain backward compatible.
+	"""
+	metadata: dict[str, Any] = {
+		"task": "bi_dashboard_repair" if repair_payload else "bi_dashboard_generation",
+		"system": system_message,
+	}
+	if repair_payload:
+		metadata["repair"] = repair_payload
+
+	payload: dict[str, Any] = {
+		"message": user_message,
+		"language": language,
+		"history": [],
+		"use_rag": False,
+		"use_tools": False,
+		"metadata": metadata,
+	}
+	if temperature is not None:
+		payload["temperature"] = float(temperature)
+	if max_tokens is not None:
+		payload["max_tokens"] = int(max_tokens)
+
+	return post_json("/chat", payload, timeout=timeout)

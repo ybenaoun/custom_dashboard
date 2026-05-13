@@ -35,6 +35,20 @@ add_to_apps_screen = [
 		"route": "/app/admin-dashboard",
 		"has_permission": "custom_dashboard.custom_dashboard.page.admin_dashboard.admin_dashboard.has_desk_icon_permission",
 	},
+	{
+		"name": "dashboard-management",
+		"logo": app_logo_url,
+		"title": "Gestion des tableaux",
+		"route": "/app/dashboard-management",
+		"has_permission": "custom_dashboard.custom_dashboard.page.dashboard_management.dashboard_management.has_desk_icon_permission",
+	},
+	{
+		"name": "widget-management",
+		"logo": app_logo_url,
+		"title": "Gestion des widgets",
+		"route": "/app/widget-management",
+		"has_permission": "custom_dashboard.custom_dashboard.page.widget_management.widget_management.has_desk_icon_permission",
+	},
 ]
 
 # Includes in <head>
@@ -273,4 +287,9 @@ after_migrate = "custom_dashboard.setup.after_migrate"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
-app_include_css = ["/assets/custom_dashboard/css/chatbot.css", "/assets/custom_dashboard/css/wizio-theme.css"]
+app_include_css = [
+	"/assets/custom_dashboard/css/chatbot.css",
+	"/assets/custom_dashboard/css/wizio-theme.css",
+	"/assets/custom_dashboard/css/compact_dashboard.css",
+	"/assets/custom_dashboard/css/final_dashboard.css",
+]

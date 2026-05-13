@@ -1,0 +1,24 @@
+{
+ "content": null,
+ "creation": "2026-05-04 00:00:00.000000",
+ "doctype": "Page",
+ "icon": "list",
+ "idx": 0,
+ "modified": "2026-05-04 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Custom Dashboard",
+ "name": "dashboard-management",
+ "owner": "Administrator",
+ "page_name": "dashboard-management",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Dashboard Admin"
+  }
+ ],
+ "standard": "Yes",
+ "system_page": 0,
+ "title": "Gestion des tableaux"
+}

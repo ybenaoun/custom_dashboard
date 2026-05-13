@@ -1,0 +1,175 @@
+/* ==========================================================
+   custom_dashboard - Final Dashboard Filter Bar
+   Cible : barre de filtres globale rendue par DashboardFilterBar
+   sur les pages stock-dashboard / vente-dashboard / achat-dashboard.
+   Le markup est inject directement dans .layout-main-section
+   (dont le wrapper a deja la classe .erp-compact-dashboard).
+   ========================================================== */
+
+.dashboard-filter-bar {
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 14px;
+	padding: 14px 16px;
+	margin-bottom: 16px;
+	box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+}
+
+.dashboard-filter-fields {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+	gap: 12px;
+}
+
+.dashboard-filter-field {
+	min-width: 0;
+}
+
+/* Frappe controls (.frappe-control) generent leur propre markup.
+   On harmonise leur taille / espacement dans le contexte de la barre. */
+.dashboard-filter-field .frappe-control {
+	margin-bottom: 0;
+}
+.dashboard-filter-field .control-label {
+	font-size: 11px;
+	font-weight: 600;
+	color: #475569;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	margin-bottom: 4px;
+}
+.dashboard-filter-field .control-input .form-control,
+.dashboard-filter-field .input-with-feedback {
+	font-size: 12.5px;
+	height: 32px;
+	padding: 4px 10px;
+}
+.dashboard-filter-field .awesomplete > input {
+	height: 32px;
+}
+.dashboard-filter-field .help-box,
+.dashboard-filter-field .clearfix {
+	display: none !important;
+}
+
+.dashboard-filter-actions {
+	display: flex;
+	gap: 8px;
+	margin-top: 12px;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+}
+
+.dashboard-filter-actions .btn {
+	font-size: 12px;
+	padding: 5px 14px;
+	border-radius: 8px;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-weight: 500;
+}
+
+.dashboard-filter-btn-icon {
+	display: inline-block;
+	font-size: 12px;
+	line-height: 1;
+}
+
+/* ==========================================================
+   Final widget grid (rendu vanilla optionnel)
+   Si un FinalDashboardRenderer vanilla est utilise a la place
+   du composant Vue partage, ces classes prennent le relais.
+   ========================================================== */
+
+.final-dashboard-page .dashboard-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 16px;
+}
+
+.dashboard-final-grid {
+	display: grid;
+	grid-template-columns: repeat(12, minmax(0, 1fr));
+	gap: 14px;
+	align-items: start;
+}
+
+.final-widget-card {
+	background: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 14px;
+	padding: 14px 16px;
+	overflow: hidden;
+	box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+.final-widget-card.kpi {
+	grid-column: span 3;
+	min-height: 130px;
+	max-height: 160px;
+}
+.final-widget-card.chart {
+	grid-column: span 6;
+	min-height: 300px;
+}
+.final-widget-card.table,
+.final-widget-card.list {
+	grid-column: span 6;
+	min-height: 340px;
+}
+.final-widget-card.full {
+	grid-column: span 12;
+	min-height: 360px;
+}
+
+.final-widget-title {
+	font-size: 13px;
+	font-weight: 600;
+	color: #475569;
+	margin-bottom: 8px;
+}
+.final-widget-value {
+	font-size: clamp(24px, 2vw, 34px);
+	font-weight: 700;
+	line-height: 1.1;
+	color: #0f172a;
+}
+.final-widget-subtitle {
+	margin-top: 8px;
+	font-size: 12px;
+	color: #64748b;
+}
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+@media (max-width: 1200px) {
+	.final-widget-card.kpi { grid-column: span 4; }
+}
+
+@media (max-width: 900px) {
+	.dashboard-filter-actions { justify-content: flex-start; }
+}
+
+@media (max-width: 768px) {
+	.dashboard-filter-bar { padding: 12px; }
+	.dashboard-filter-fields { grid-template-columns: 1fr 1fr; }
+	.final-dashboard-page .dashboard-header {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+	.final-widget-card.kpi,
+	.final-widget-card.chart,
+	.final-widget-card.table,
+	.final-widget-card.list,
+	.final-widget-card.full {
+		grid-column: span 12;
+	}
+}
+
+@media (max-width: 480px) {
+	.dashboard-filter-fields { grid-template-columns: 1fr; }
+}

@@ -21,6 +21,10 @@ class UserDashboard(Document):
 	def validate(self):
 		self.title = (self.title or "").strip()
 		self.set("module_name", (self.get("module_name") or "").strip())
+		if self.is_active is None:
+			self.is_active = 1
+		else:
+			self.is_active = 1 if cint(self.is_active) else 0
 		if not self.title:
 			frappe.throw(_("Title is required."))
 

@@ -740,22 +740,56 @@ def get_widget_definition(widget_name: str, user: str | None = None) -> dict[str
 	return serialize_widget_definition(widget, user=user)
 
 
-def list_admin_widgets(user: str | None = None) -> list[dict[str, Any]]:
+CATEGORY_TO_MODULE = {
+	"Stock": "Stock",
+	"Vente": "Selling",
+	"Achat": "Buying",
+}
+
+MODULE_TO_CATEGORY = {
+	"Stock": "Stock",
+	"Selling": "Vente",
+	"Buying": "Achat",
+}
+
+
+def list_admin_widgets(category: str | None = None, user: str | None = None) -> list[dict[str, Any]]:
 	access.require_dashboard_admin(user)
+	filters: dict[str, Any] = {}
+	if category:
+		mapped = CATEGORY_TO_MODULE.get(category.strip()) if isinstance(category, str) else None
+		if mapped:
+			filters["module_name"] = mapped
+		else:
+			return []
+
 	widgets = frappe.get_all(
 		"Custom Dashboard Widget",
 		fields=["name"],
+		filters=filters,
 		order_by="category asc, title asc",
 	)
-	return [
-		{
-			**serialize_widget_definition(frappe.get_cached_doc("Custom Dashboard Widget", row.name), user=user),
-			"role_count": len(
-				frappe.get_cached_doc("Custom Dashboard Widget", row.name).get("roles") or []
-			),
-		}
-		for row in widgets
-	]
+	result = []
+	for row in widgets:
+		doc = frappe.get_cached_doc("Custom Dashboard Widget", row.name)
+		definition = serialize_widget_definition(doc, user=user)
+		definition["category_label"] = MODULE_TO_CATEGORY.get(definition.get("module_name") or "", "")
+		definition["role_count"] = len(doc.get("roles") or [])
+		result.append(definition)
+	return result
+
+
+def admin_toggle_widget_active(
+	widget_name: str, is_active: int | bool, user: str | None = None
+) -> dict[str, Any]:
+	access.require_dashboard_admin(user)
+	if not frappe.db.exists("Custom Dashboard Widget", widget_name):
+		frappe.throw(_("Widget introuvable: {0}").format(widget_name))
+	doc = frappe.get_doc("Custom Dashboard Widget", widget_name)
+	doc.is_active = 1 if cint(is_active) else 0
+	doc.save(ignore_permissions=True)
+	frappe.clear_document_cache("Custom Dashboard Widget", widget_name)
+	return get_widget_admin_definition(widget_name, user=user)
 
 
 def _serialize_widget_role_matrix(widget) -> list[dict[str, Any]]:

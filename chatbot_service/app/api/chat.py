@@ -164,6 +164,47 @@ async def _classify_intent(req: ChatRequest, user: dict[str, Any]) -> ChatRespon
     return _chat_response(result, json.dumps(response_payload, ensure_ascii=False))
 
 
+async def _generate_bi_dashboard_spec(req: ChatRequest, user: dict[str, Any]) -> ChatResponse:
+    """Generic JSON-only call used by bi_studio for dashboard spec generation.
+
+    The caller passes:
+      - req.message: the user prompt (already contains all dataset metadata)
+      - req.metadata.system: optional system message override
+      - req.metadata.repair: optional dict {invalid_json, errors, schema}
+        triggering a repair-prompt flow (one shot).
+    Returns ChatResponse with .response containing the raw JSON object as string.
+    """
+    metadata = req.metadata if isinstance(req.metadata, dict) else {}
+    system_message = metadata.get("system") or (
+        "You are an expert BI dashboard designer and data analyst. "
+        "Your task is to design a dashboard specification as strict JSON. "
+        "You do not calculate final metric values. "
+        "The application language is French. All user-facing text values in the JSON "
+        "must be written in French. JSON keys must remain in English. "
+        "Return only valid JSON. Do not include markdown. Do not include explanations."
+    )
+    user_message = req.message
+    repair = metadata.get("repair")
+    if isinstance(repair, dict):
+        user_message = (
+            "Le JSON suivant est invalide. Corrige-le en respectant strictement le schema attendu. "
+            "Retourne uniquement le JSON corrige, sans markdown ni explication.\n\n"
+            f"JSON invalide:\n{json.dumps(repair.get('invalid_json'), ensure_ascii=False, default=str)}\n\n"
+            f"Erreurs de validation:\n{json.dumps(repair.get('errors') or [], ensure_ascii=False)}\n\n"
+            f"Schema attendu:\n{json.dumps(repair.get('schema') or {}, ensure_ascii=False)}"
+        )
+
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": user_message},
+    ]
+    result = await cohere_client.chat(messages, user=user, language=req.language, use_tools=False)
+    payload = _json_object_from_text(result["text"])
+    if payload is None:
+        return _chat_response(result, json.dumps({"error": "invalid_json", "raw": result["text"]}, ensure_ascii=False))
+    return _chat_response(result, json.dumps(payload, ensure_ascii=False, default=str))
+
+
 async def _generate_dashboard_widget_insight(req: ChatRequest, user: dict[str, Any]) -> ChatResponse:
     metadata = req.metadata if isinstance(req.metadata, dict) else {}
     expected_schema = metadata.get("json_schema") or {
@@ -279,6 +320,8 @@ async def chat(
         return await _classify_intent(req, user)
     if task in {"dashboard_widget_insight", "dashboard_ai_widget"}:
         return await _generate_dashboard_widget_insight(req, user)
+    if task in {"bi_dashboard_generation", "bi_dashboard_repair"}:
+        return await _generate_bi_dashboard_spec(req, user)
 
     retrieval = await _retrieve_rag(req, user)
     if req.use_rag and not req.use_tools and retrieval is None:

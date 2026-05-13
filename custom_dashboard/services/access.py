@@ -79,6 +79,14 @@ def get_dashboard_doc(dashboard: str | Document) -> Document:
 	return frappe.get_doc("User Dashboard", dashboard)
 
 
+def is_dashboard_active(dashboard: str | Document | Any) -> bool:
+	doc = get_dashboard_doc(dashboard)
+	value = doc.get("is_active") if hasattr(doc, "get") else getattr(doc, "is_active", None)
+	if value is None:
+		return True
+	return cint(value) == 1
+
+
 def is_widget_active(widget: str | Document) -> bool:
 	return cint(get_widget_doc(widget).is_active) == 1
 
@@ -247,6 +255,9 @@ def can_read_dashboard(dashboard: str | Document | Any, user: str | None = None)
 	if not has_builder_access(user):
 		return False
 
+	if not is_dashboard_active(dashboard) and not is_dashboard_admin(user):
+		return False
+
 	return get_dashboard_share_flags(dashboard, user=user)["can_read"]
 
 
@@ -346,6 +357,7 @@ def get_user_dashboard_permission_query_condition(user: str | None = None) -> st
 		role_condition = f"(share_type = 'Role' and role in ({role_list}))"
 
 	return (
+		"ifnull(`tabUser Dashboard`.`is_active`, 1) = 1 and "
 		f"(`tabUser Dashboard`.`user` = {frappe.db.escape(user)} "
 		"or ifnull(`tabUser Dashboard`.`is_shared`, 0) = 1 "
 		"or exists ("

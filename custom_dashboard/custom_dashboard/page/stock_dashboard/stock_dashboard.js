@@ -22,6 +22,7 @@ function load_stock_dashboard(wrapper) {
 	}
 
 	$parent.empty();
+	$parent.addClass("erp-compact-dashboard stock-dashboard");
 
 	frappe.require("stock_dashboard.bundle.js").then(() => {
 		wrapper.stock_dashboard_app = new custom_dashboard.ui.StockDashboardApp({
