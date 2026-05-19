@@ -92,11 +92,31 @@
 				<div class="adx-section-head">
 					<h5>{{ __('Analytique visuelle') }}</h5>
 					<span class="adx-section-line"></span>
+					<div class="adx-filters">
+						<label class="adx-filter">
+							<span>{{ __('Période') }}</span>
+							<select v-model.number="period" @change="reload">
+								<option :value="7">{{ __('7 jours') }}</option>
+								<option :value="14">{{ __('14 jours') }}</option>
+								<option :value="30">{{ __('30 jours') }}</option>
+							</select>
+						</label>
+						<label class="adx-filter">
+							<span>{{ __('Type') }}</span>
+							<select v-model="chartTypeFilter">
+								<option value="all">{{ __('Tous') }}</option>
+								<option value="line">{{ __('Courbes') }}</option>
+								<option value="bar">{{ __('Barres') }}</option>
+								<option value="donut">{{ __('Donut') }}</option>
+							</select>
+						</label>
+					</div>
 				</div>
 				<div class="adx-chart-grid">
 					<ChartCard
+						v-if="showChart('line')"
 						class="adx-chart-wide"
-						:title="__('Tendance des connexions (7j)')"
+						:title="__('Tendance des connexions') + ' (' + period + 'j)'"
 						subtitle="line"
 						:data="loginChartData"
 						type="line"
@@ -105,6 +125,7 @@
 						:fill="true"
 					/>
 					<ChartCard
+						v-if="showChart('donut')"
 						:title="__('Répartition utilisateurs')"
 						subtitle="donut"
 						:data="userDonutData"
@@ -113,7 +134,8 @@
 						:height="240"
 					/>
 					<ChartCard
-						:title="__('Erreurs (14 jours)')"
+						v-if="showChart('line')"
+						:title="__('Erreurs') + ' (' + period + 'j)'"
 						subtitle="line"
 						:data="errorChartData"
 						type="line"
@@ -122,6 +144,7 @@
 						:fill="true"
 					/>
 					<ChartCard
+						v-if="showChart('bar')"
 						:title="__('Activité emails')"
 						subtitle="bar"
 						:data="emailBarData"
@@ -130,6 +153,7 @@
 						:height="240"
 					/>
 					<ChartCard
+						v-if="showChart('donut')"
 						:title="__('Stockage fichiers')"
 						subtitle="donut"
 						:data="fileDonutData"
@@ -138,6 +162,7 @@
 						:height="240"
 					/>
 					<ChartCard
+						v-if="showChart('bar')"
 						class="adx-chart-wide"
 						:title="__('Santé des modules')"
 						subtitle="bar"
@@ -146,6 +171,9 @@
 						:colors="['#1B84FF']"
 						:height="240"
 					/>
+					<div v-if="!visibleChartCount" class="adx-empty-charts">
+						{{ __('Aucun graphique pour ce filtre.') }}
+					</div>
 				</div>
 			</section>
 
@@ -214,6 +242,8 @@ export default {
 		const data = ref(null);
 		const errorTrend = ref([]);
 		const loading = ref(false);
+		const period = ref(7);
+		const chartTypeFilter = ref("all");
 		const theme = ref(document.documentElement.getAttribute("data-theme") || "light");
 
 		async function fetchAll() {
@@ -222,9 +252,11 @@ export default {
 				const [main, errors] = await Promise.all([
 					frappe.call({
 						method: "custom_dashboard.custom_dashboard.page.admin_dashboard.admin_dashboard.get_dashboard_data",
+						args: { days: period.value },
 					}),
 					frappe.call({
 						method: "custom_dashboard.custom_dashboard.page.admin_dashboard.admin_dashboard.get_error_trend",
+						args: { days: period.value },
 					}),
 				]);
 				data.value = main.message || null;
@@ -477,9 +509,19 @@ export default {
 			fetchAll();
 		}
 
+		const CHART_TYPES = ["line", "donut", "line", "bar", "donut", "bar"];
+		function showChart(type) {
+			return chartTypeFilter.value === "all" || chartTypeFilter.value === type;
+		}
+		const visibleChartCount = computed(() =>
+			CHART_TYPES.filter((t) => showChart(t)).length
+		);
+
 		return {
 			data,
 			loading,
+			period,
+			chartTypeFilter,
 			theme,
 			kpiList,
 			loginChartData,
@@ -492,6 +534,8 @@ export default {
 			health,
 			reload,
 			truncate,
+			showChart,
+			visibleChartCount,
 		};
 	},
 };

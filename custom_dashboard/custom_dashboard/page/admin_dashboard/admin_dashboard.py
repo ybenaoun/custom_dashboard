@@ -7,10 +7,12 @@ def has_desk_icon_permission():
 
 
 @frappe.whitelist()
-def get_dashboard_data():
+def get_dashboard_data(days=7):
 	frappe.only_for(["System Manager", "Administrator"])
 
+	days = max(1, cint(days) or 7)
 	today = getdate(now_datetime())
+	period_start = add_days(today, -days)
 	week_ago = add_days(today, -7)
 	month_ago = add_months(today, -1)
 
@@ -20,7 +22,7 @@ def get_dashboard_data():
 		"emails": get_email_stats(today, week_ago),
 		"website": get_website_stats(),
 		"files": get_file_stats(),
-		"activity": get_activity_stats(today, week_ago),
+		"activity": get_activity_stats(today, period_start),
 		"workflows": get_workflow_stats(),
 		"automation": get_automation_stats(),
 		"todos": get_todo_stats(),
@@ -241,9 +243,10 @@ def get_module_health():
 
 
 @frappe.whitelist()
-def get_error_trend():
+def get_error_trend(days=14):
 	frappe.only_for(["System Manager", "Administrator"])
-	fourteen_days_ago = add_days(getdate(now_datetime()), -14)
+	days = max(1, cint(days) or 14)
+	start = add_days(getdate(now_datetime()), -days)
 
 	return frappe.db.sql(
 		"""SELECT DATE(creation) as date, COUNT(*) as count
@@ -251,7 +254,7 @@ def get_error_trend():
 		WHERE creation >= %s
 		GROUP BY DATE(creation)
 		ORDER BY date""",
-		fourteen_days_ago,
+		start,
 		as_dict=True,
 	)
 

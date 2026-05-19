@@ -245,6 +245,51 @@
 	height: 1px;
 	background: linear-gradient(90deg, var(--adx-border), transparent);
 }
+.adx-filters {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+}
+.adx-filter {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--adx-muted);
+	margin: 0;
+}
+.adx-filter span {
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+}
+.adx-filter select {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--adx-text);
+	background: #fff;
+	border: 1px solid var(--adx-border);
+	border-radius: 8px;
+	padding: 5px 26px 5px 10px;
+	cursor: pointer;
+	outline: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.adx-filter select:hover,
+.adx-filter select:focus {
+	border-color: #1B84FF;
+	box-shadow: 0 0 0 3px rgba(27, 132, 255, 0.15);
+}
+.adx-empty-charts {
+	grid-column: 1 / -1;
+	padding: 36px 16px;
+	text-align: center;
+	color: var(--adx-muted);
+	font-size: 13px;
+	background: rgba(248, 250, 252, 0.6);
+	border: 1px dashed var(--adx-border);
+	border-radius: 12px;
+}
 
 /* ────────── Skeleton ──────────────────────────────────────────────────── */
 .adx-skeleton-grid {

@@ -1,8 +1,8 @@
 {
  "app": "custom_dashboard",
  "charts": [],
- "content": "[{\"id\":\"cd-header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Custom Dashboard</b></span>\",\"col\":12}},{\"id\":\"cd-builder-shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Constructeur\",\"col\":4}},{\"id\":\"cd-dashboards-shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Tableaux de bord\",\"col\":4}},{\"id\":\"cd-widgets-shortcut\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Widgets\",\"col\":4}}]",
- "creation": "2026-04-23 00:00:00.000000",
+ "content": "[{\"id\":\"cd-header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Custom Dashboard</b></span>\",\"col\":12}},{\"id\":\"cd-builder\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Constructeur\",\"col\":4}},{\"id\":\"cd-dashboard-mgmt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Gestion des tableaux\",\"col\":4}},{\"id\":\"cd-widget-mgmt\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Gestion des widgets\",\"col\":4}}]",
+ "creation": "2026-05-18 23:02:23.337433",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -14,7 +14,7 @@
  "is_hidden": 0,
  "label": "Custom Dashboard",
  "links": [],
- "modified": "2026-04-23 00:00:00.000000",
+ "modified": "2026-05-18 23:07:26.195762",
  "modified_by": "Administrator",
  "module": "Custom Dashboard",
  "name": "Custom Dashboard",
@@ -46,14 +46,14 @@
    "type": "Page"
   },
   {
-   "label": "Tableaux de bord",
-   "link_to": "User Dashboard",
-   "type": "DocType"
+   "label": "Gestion des tableaux",
+   "link_to": "dashboard-management",
+   "type": "Page"
   },
   {
-   "label": "Widgets",
-   "link_to": "Custom Dashboard Widget",
-   "type": "DocType"
+   "label": "Gestion des widgets",
+   "link_to": "widget-management",
+   "type": "Page"
   }
  ],
  "title": "Custom Dashboard",

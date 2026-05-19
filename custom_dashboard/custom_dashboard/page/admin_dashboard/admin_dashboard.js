@@ -17,14 +17,6 @@ frappe.pages["admin-dashboard"].on_page_load = function (wrapper) {
 	`;
 	$(bootstrap_html).appendTo(page.body.addClass("no-border"));
 
-	page.set_secondary_action(__("Refresh"), () => {
-		if (window.__adminDashboardInstance && window.__adminDashboardInstance.instance) {
-			window.__adminDashboardInstance.instance.reload();
-		} else {
-			load_bundle();
-		}
-	}, "refresh");
-
 	function showError(msg) {
 		const target = page.body.get(0).querySelector("#admin-dashboard-app");
 		if (!target) return;
